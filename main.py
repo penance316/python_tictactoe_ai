@@ -1,3 +1,6 @@
+import random
+import time
+
 board = ['-', '-', '-', '-', '-', '-', '-', '-', '-']
 aiPlayer = 'O'
 humanPlayer = "X"
@@ -7,22 +10,37 @@ gameRunning = True
 
 
 # print game board
-def print_board(board):
-    print(board[0] + ' | ' + board[1] + ' | ' + board[2])
+def print_board(var_board):
+    print(var_board[0] + ' | ' + var_board[1] + ' | ' + var_board[2])
     print('----------')
-    print(board[3] + ' | ' + board[4] + ' | ' + board[5])
+    print(var_board[3] + ' | ' + var_board[4] + ' | ' + var_board[5])
     print('----------')
-    print(board[6] + ' | ' + board[7] + ' | ' + board[8])
+    print(var_board[6] + ' | ' + var_board[7] + ' | ' + var_board[8])
 
 
 # take players input
-def player_input(board):
+def player_input(var_board):
     global currentPlayer
     input_var = int(input(f"Player {currentPlayer} : Enter a number from 1-9: "))
-    if 1 <= input_var <= 9 and board[input_var - 1] == '-':
-        board[input_var - 1] = currentPlayer
+    if 1 <= input_var <= 9 and var_board[input_var - 1] == '-':
+        var_board[input_var - 1] = currentPlayer
     else:
         print("Invalid input")
+        print_board(var_board)
+        player_input(var_board)
+
+
+# Computer moves.
+def computer_input():
+    global currentPlayer
+    global aiPlayer
+    while currentPlayer == aiPlayer:
+        print("Computer is thinking...")
+        time.sleep(1)
+        input_var = random.randint(0, 8)
+        if board[input_var] == '-':
+            board[input_var] = aiPlayer
+            switch_player()
 
 
 # check for win/tie
@@ -75,17 +93,26 @@ def switch_player():
         currentPlayer = humanPlayer
 
 
-# check for win or tie again
-
-
 while gameRunning:
     print_board(board)
     player_input(board)
     if check_tie():
         print("Tie")
         gameRunning = False
+        break
     if check_winner():
         print_board(board)
         print("Player " + winner + " wins!")
         gameRunning = False
+        break
     switch_player()
+    computer_input()
+    if check_tie():
+        print("Tie")
+        gameRunning = False
+        break
+    if check_winner():
+        print_board(board)
+        print("Player " + winner + " wins!")
+        gameRunning = False
+        break
