@@ -3,6 +3,10 @@ import random
 import time
 
 board = ['-', '-', '-', '-', '-', '-', '-', '-', '-']
+# board = ['X', 'X', 'O',
+#          'X', 'O', '-',
+#          '-', '-', '-']
+
 aiPlayer = 'O'
 humanPlayer = "X"
 emptyCell = '-'
@@ -25,10 +29,11 @@ def minimax(var_board, is_maximizing, depth=0):
     global aiPlayer
     global humanPlayer
     global emptyCell
+    # depth is the number of moves it took to win, so use as a weight
     if check_which_player_won(aiPlayer):
-        return -100
+        return -100 + depth
     elif check_which_player_won(humanPlayer):
-        return 100
+        return 100 - depth
     elif check_tie():
         return 0
     if is_maximizing:
@@ -36,7 +41,7 @@ def minimax(var_board, is_maximizing, depth=0):
         for i in range(9):
             if var_board[i] == emptyCell:
                 var_board[i] = aiPlayer
-                score = minimax(var_board, False)
+                score = minimax(var_board, False, depth + 1)
                 var_board[i] = emptyCell
                 best_score = max(score, best_score)
         return best_score
@@ -45,7 +50,7 @@ def minimax(var_board, is_maximizing, depth=0):
         for i in range(9):
             if var_board[i] == emptyCell:
                 var_board[i] = humanPlayer
-                score = minimax(var_board, True)
+                score = minimax(var_board, True, depth + 1)
                 var_board[i] = emptyCell
                 best_score = min(score, best_score)
         return best_score
